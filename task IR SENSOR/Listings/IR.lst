@@ -1,0 +1,46 @@
+C51 COMPILER V9.60.0.0   IR                                                                09/25/2022 23:07:41 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE IR
+OBJECT MODULE PLACED IN .\Objects\IR.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE IR.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\IR.lst
+                    -) TABS(2) OBJECT(.\Objects\IR.obj)
+
+line level    source
+
+   1          #include<reg51.h>
+   2          #include "lcd.h"
+   3          
+   4          void main()
+   5          {
+   6   1          lcd_init();
+   7   1          string(" AZMAN BAKHTIAR ");
+   8   1          while(1)
+   9   1            {
+  10   2           if(IR == 0) {
+  11   3                  led=0;
+  12   3                  lcmd(0xc0);
+  13   3                  string("signal Detected");
+  14   3                  signal_delay();
+  15   3                 signal_delay();
+  16   3              } else {
+  17   3                 led=1;
+  18   3                  lcmd(0xc0);
+  19   3                  string("      ");
+  20   3              }
+  21   2          }
+  22   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     57    ----
+   CONSTANT SIZE    =     40    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,4 @@
+".\EXTRA TASK\STARTUP.obj",
+".\EXTRA TASK\task1.obj" 
+TO ".\EXTRA TASK\extra" 
+PRINT(".\Listings\extra.m51") RAMSIZE(256) 

@@ -1,0 +1,37 @@
+#include <reg51.h>
+sbit switch_1=P3^2;
+sbit A=P2^4;
+sbit b=P2^3;
+sbit C=P2^2;
+void digi_out(unsigned int current_num);
+void calc_vote();
+unsigned int i;
+void main()
+{
+while(1)
+{
+calc_vote();
+}
+}
+
+void calc_vote()
+{
+   unsigned int digi_val[]={0x3f,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x67};
+	 unsigned int vote_1=0;
+	 switch_1=1;
+while(1)
+{
+if (switch_1==0)
+{
+while (switch_1 == 0)
+{
+	A=1;	b=0; C=1;
+P0=digi_val[vote_1];	
+}
+switch_1=1;
+vote_1++;
+if(vote_1==10)
+vote_1=0;
+}
+}
+}

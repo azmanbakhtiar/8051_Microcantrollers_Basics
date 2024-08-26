@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\a.obj" 
+TO ".\Objects\8bit" 
+PRINT(".\Listings\8bit.m51") RAMSIZE(256) 

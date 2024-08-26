@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\sending_data_Pc_to_microcontroller.obj" 
+TO ".\Objects\sending_data_pc_to_microcontroller" 
+PRINT(".\Listings\sending_data_pc_to_microcontroller.m51") RAMSIZE(256) 

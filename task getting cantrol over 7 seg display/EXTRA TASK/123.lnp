@@ -1,0 +1,4 @@
+"..\intenship data-1\task 12\EXTRA TASK\STARTUP.obj",
+"..\intenship data-1\task 12\EXTRA TASK\czx.obj" 
+TO "..\intenship data-1\task 12\EXTRA TASK\123" 
+PRINT(".\Listings\123.m51") RAMSIZE(256) 

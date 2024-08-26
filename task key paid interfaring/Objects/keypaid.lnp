@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\keypaid.obj" 
+TO ".\Objects\keypaid" 
+PRINT(".\Listings\keypaid.m51") RAMSIZE(256) 

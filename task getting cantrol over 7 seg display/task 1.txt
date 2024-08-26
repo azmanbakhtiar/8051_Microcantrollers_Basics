@@ -1,0 +1,85 @@
+#include <reg51.h>
+#include <stdio.h>
+#define SEGD P0
+sbit A=P2^4;
+sbit b=P2^3;
+sbit C=P2^2;
+int cntr_10ms = 0;         //variable declaration;
+void timerdelay();
+	int x;
+void ISR_timer0(void) interrupt 1     //interrupt service routine of 10ms overflow
+{ 
+	
+	
+		
+		A=1;	b=1; C=1;
+		SEGD = 0xFF;  
+		for (x=0; x<20; x++)   // Total of 500 ms delay
+	{
+		timerdelay();  //25 ms
+	}
+
+		A=1;	b=1; C=0;
+		SEGD = 0xFF;  
+		for (x=0; x<20; x++)    // Total of 500 ms delay
+	{
+		timerdelay();
+	}
+		
+		A=1;	b=0; C=1;
+		SEGD = 0xFF;  
+		for (x=0; x<20; x++)    // Total of 500 ms delay
+	{
+		timerdelay();
+	}
+		
+		A=1;	b=0; C=0;
+		SEGD = 0xFF;  
+		for (x=0; x<20; x++)
+	{
+		timerdelay();
+	}
+		
+		A=0;	b=1; C=1;
+		SEGD = 0xFF;  
+		for (x=0; x<20; x++)
+	{
+		timerdelay();
+	}
+		
+		A=0;	b=1; C=0;
+		SEGD = 0xFF;  
+		for (x=0; x<20; x++)
+	{
+		timerdelay();
+	}
+		
+		A=0;	b=0; C=1;
+		SEGD = 0xFF;  
+		for (x=0; x<20; x++)
+	{
+		timerdelay();
+	}
+		A=0;	b=0; C=0;
+		SEGD = 0xFF;  
+		for (x=0; x<20; x++)
+	{
+		timerdelay();
+	}
+	cntr_10ms=0;
+
+ }
+void main (void )
+{
+
+  TMOD = 0x02;    // Timer 0 Mode 2
+  TH0= -83;     //initial value for 1ms
+  IE=0x82;
+  TR0 = 1;     // timer start
+	while(1)
+{
+
+
+
+}
+}

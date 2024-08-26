@@ -1,0 +1,1 @@
+"pp.c" OPTIMIZE (8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\pp.lst) TABS (2) OBJECT(.\Objects\pp.obj)

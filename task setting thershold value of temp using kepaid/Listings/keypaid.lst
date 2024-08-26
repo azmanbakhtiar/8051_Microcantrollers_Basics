@@ -1,0 +1,24 @@
+C51 COMPILER V9.60.0.0   KEYPAID                                                           09/14/2022 00:28:37 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE KEYPAID
+OBJECT MODULE PLACED IN .\Objects\keypaid.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE keypaid.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\k
+                    -eypaid.lst) TABS(2) OBJECT(.\Objects\keypaid.obj)
+
+line level    source
+
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   ----    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

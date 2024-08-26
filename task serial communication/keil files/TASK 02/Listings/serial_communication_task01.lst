@@ -1,0 +1,55 @@
+C51 COMPILER V9.60.0.0   SERIAL_COMMUNICATION_TASK01                                       10/04/2021 17:32:14 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE SERIAL_COMMUNICATION_TASK01
+OBJECT MODULE PLACED IN .\Objects\serial_communication_task01.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE serial_communication_task01.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEN
+                    -D PRINT(.\Listings\serial_communication_task01.lst) TABS(2) OBJECT(.\Objects\serial_communication_task01.obj)
+
+line level    source
+
+   1          #include<STC89xxx.h>
+   2          #include<stdio.h>
+   3          void delay(unsigned count);
+   4          unsigned int i=0;
+   5          unsigned int u=0;
+   6          unsigned int j=0;
+   7          void main()
+   8            
+   9          {
+  10   1        unsigned char Mystring[]="Helo world\n\r";
+  11   1        TMOD=0x20;
+  12   1        TH1=0xFD;
+  13   1        SCON=0x50;
+  14   1        TR1=1;
+  15   1        for(u=0;u<14;u++)
+  16   1        {
+  17   2        SBUF=Mystring[u];
+  18   2        while(TI==0);
+  19   2        TI=0;
+  20   2          
+  21   2        
+  22   2      }
+  23   1        delay(200);
+  24   1        }
+  25          
+  26          void delay(unsigned int count)
+  27          {
+  28   1        for(i=0;i<count;i++)
+  29   1        for(j=0;j<114;j++);
+  30   1        
+  31   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    113    ----
+   CONSTANT SIZE    =     13    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      6      13
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

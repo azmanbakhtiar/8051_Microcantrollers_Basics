@@ -1,0 +1,60 @@
+C51 COMPILER V9.60.0.0   SSD                                                               07/30/2022 11:18:26 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE SSD
+OBJECT MODULE PLACED IN .\Objects\SSD.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE SSD.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\SSD.l
+                    -st) TABS(2) OBJECT(.\Objects\SSD.obj)
+
+line level    source
+
+   1          #include<reg51.h>
+   2          #include  "main.h"
+   3          
+   4          
+   5          //char ii=0,j=0,jj=0;
+   6          
+   7          //unsigned int message[10] = {0x3f,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x67};
+   8          
+   9          ////unsigned int select[]  =  {0x1C,0x18,0x14,0x10,0x0C,0x08,0x04,0x00};
+  10          //unsigned char values[8];
+  11          //char k;
+  12          //void display_num_7seg(long num)
+  13          //{
+  14          //for(k=2;k>=0;k--)
+  15          // {
+  16          //  values[k]=message[num%10];
+  17          // }
+  18          // }
+  19          // void timer1_interrupt(void) interrupt 1   //ISR 2.5 ms
+  20          // {
+  21          //   P2 |=0x1C;
+  22          //   P2 &= ~(jj<<2);
+  23          //   P0 = values[jj];
+  24          //   jj++;
+  25          //   if(jj==3){
+  26          //     jj=0;
+  27          //     j++;
+  28          //   }
+  29          //   if(j==30){
+  30          //     Counter++;
+  31          //     j=0;
+  32          //     Read=0x01;
+  33          //   }
+  34          //  TH0= 0xF6;
+  35          //  TL0=0x3B;
+  36          //}
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   ----    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

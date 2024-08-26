@@ -1,0 +1,214 @@
+C51 COMPILER V9.60.0.0   CALCULATOR                                                        09/27/2022 11:10:43 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE CALCULATOR
+OBJECT MODULE PLACED IN .\Objects\calculator.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE calculator.c LARGE OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\L
+                    -istings\calculator.lst) TABS(2) OBJECT(.\Objects\calculator.obj)
+
+line level    source
+
+   1          #include <reg51.h>
+   2          #include "cal.h"
+   3          void del(unsigned int itime);
+   4          void linit();
+   5          int calc (void)
+   6            {
+   7   1         while(1){
+   8   2         unsigned int k=0,m=0,n=0;int k2,k1; char key,key1;unsigned char ch2;
+   9   2         linit();
+  10   2            string("CALCULATOR"); 
+  11   2          
+  12   2      lcdcmd(0xC0);
+  13   2      key=scan_key();
+  14   2      k2=get_num(key);
+  15   2      
+  16   2      
+  17   2      
+  18   2      ch2=scan_key();
+  19   2        
+  20   2      
+  21   2      
+  22   2      key1=scan_key();
+  23   2      k1=get_num(key1);
+  24   2      
+  25   2        
+  26   2        string(" = ");  
+  27   2           
+  28   2      switch(ch2)
+  29   2      {
+  30   3      case '+':
+  31   3      disp_num(k1+k2);
+  32   3      break;
+  33   3      case '-':
+  34   3      disp_num(k2-k1);
+  35   3      break;
+  36   3      case '*':
+  37   3      disp_num(k2*k1);
+  38   3      break;
+  39   3      case '/':
+  40   3      disp_num(k2/k1);
+  41   3      break;
+  42   3      }
+  43   2      return 0;
+  44   2      }
+  45   1      }
+  46          
+  47          void linit(){
+  48   1       del(15000);
+  49   1      lcdcmd(0x30);
+  50   1      del(4500);
+  51   1      lcdcmd(0x30);
+  52   1      del(300);
+  53   1      lcdcmd(0x30);
+  54   1      del(600);
+C51 COMPILER V9.60.0.0   CALCULATOR                                                        09/27/2022 11:10:43 PAGE 2   
+
+  55   1          lcdcmd(0x38);
+  56   1          lcdcmd(0x0F);
+  57   1          lcdcmd(0x01);
+  58   1          lcdcmd(0x06);
+  59   1          lcdcmd(0x80);
+  60   1      }
+  61          
+  62          
+  63          
+  64          void lcdcmd(unsigned char value)
+  65            {
+  66   1          P0 = value;      
+  67   1          rs = 0;
+  68   1          rw = 0;
+  69   1          en = 1;            
+  70   1          del(50);
+  71   1          en = 0;
+  72   1      del(50);
+  73   1          
+  74   1        }
+  75          void lcddata(unsigned char value)
+  76            {
+  77   1         P0 = value;  
+  78   1          rs = 1;
+  79   1          rw = 0;
+  80   1          en = 1;          
+  81   1          del(50);
+  82   1          en = 0;
+  83   1          del(50);
+  84   1        }
+  85          void del(unsigned int itime)
+  86            {
+  87   1          unsigned int i, j;
+  88   1          for(i=0;i< itime;i++)           
+  89   1            for(j=0;j<5;j++);       
+  90   1        }
+  91          
+  92          char scan_key()
+  93          {
+  94   1      unsigned char c;
+  95   1      c='s';
+  96   1      while(!(c=='0' && c=='1' &&  c=='2' && c=='3' && c=='4' && c=='5' && c=='6' && c=='7' && c=='8'
+  97   1       && c=='9' && c=='+' && c=='-' && c=='=' && c=='$' && c=='*' && c=='/' ))
+  98   1      {
+  99   2      r0=0;r1=1;r2=1;r3=1;
+ 100   2      if(c0==0 && r0==0 ){lcddata('/');del(10000);return c='/';}
+ 101   2          if(c1==0 && r0==0){ lcddata('*');del(10000);return c= '*';}
+ 102   2      if(c2==0 && r0==0){ lcddata('-');del(10000);return c= '-';}
+ 103   2      if(c3==0 && r0==0){ lcddata('+');del(10000);return c= '+';}
+ 104   2        
+ 105   2      r0=1;r1=0;r2=1;r3=1;
+ 106   2      
+ 107   2      if(c0==0 && r1==0){ lcddata('=');del(10000);return c= '=';}
+ 108   2          if(c1==0 && r1==0){ lcddata('9');del(10000);return c= '9';}
+ 109   2      if(c2==0 && r1==0){ lcddata('6');del(10000);return c= '6';}
+ 110   2      if(c3==0 && r1==0){ lcddata('3');del(10000);return c= '3';}
+ 111   2      
+ 112   2      r0=1;r1=1;r2=0;r3=1;
+ 113   2      
+ 114   2      if(c0==0 && r2==0){ lcddata('0');del(10000);return c= '0';}
+ 115   2          if(c1==0 && r2==0){ lcddata('8');del(10000);return c= '8';}
+ 116   2      if(c2==0 && r2==0){ lcddata('5');del(10000);return c= '5';}
+C51 COMPILER V9.60.0.0   CALCULATOR                                                        09/27/2022 11:10:43 PAGE 3   
+
+ 117   2      if(c3==0 && r2==0){ lcddata('2');del(10000);return c= '2';}
+ 118   2      
+ 119   2      r0=1;r1=1;r2=1;r3=0;
+ 120   2      
+ 121   2      if(c0==0 && r3==0){ lcddata('*');del(10000);return c= '*';}
+ 122   2          if(c1==0 && r3==0){ lcddata('7');del(10000);return c= '7';}
+ 123   2      if(c2==0 && r3==0){ lcddata('4');del(10000);return c= '4';}
+ 124   2      if(c3==0 && r3==0){ lcddata('1');del(10000);return c= '1';}
+ 125   2      }
+ 126   1      return 0;
+ 127   1      }
+ 128          
+ 129          int get_num(char ch)         //convert char into int
+ 130          {
+ 131   1      switch(ch)
+ 132   1      {
+ 133   2      case '0': return 0; break;
+ 134   2      case '1': return 1; break;
+ 135   2      case '2': return 2; break;
+ 136   2      case '3': return 3; break;
+ 137   2      case '4': return 4; break;
+ 138   2      case '5': return 5; break;
+ 139   2      case '6': return 6; break;
+ 140   2      case '7': return 7; break;
+ 141   2      case '8': return 8; break;
+ 142   2      case '9': return 9; break;
+ 143   2      }
+ 144   1      return 0;
+ 145   1      }
+ 146          
+ 147          void disp_num(float num)            //displays number on LCD
+ 148          {
+ 149   1      unsigned char UnitDigit  = 0;  //It will contain unit digit of numb
+ 150   1      unsigned char TenthDigit = 0;  //It will contain 10th position digit of numb
+ 151   1      unsigned char decimal = 0;
+ 152   1      int j;
+ 153   1      int numb;
+ 154   1      j=(int)(num*10);
+ 155   1      numb=(int)num;
+ 156   1      if(numb<0)
+ 157   1      {
+ 158   2      numb = -1*numb;  // Make number positive
+ 159   2      lcddata('-'); // Display a negative sign on LCD
+ 160   2      }
+ 161   1      
+ 162   1      TenthDigit = (numb/10);          // Findout Tenth Digit
+ 163   1      
+ 164   1      if( TenthDigit != 0)           // If it is zero, then don't display
+ 165   1      lcddata(TenthDigit+0x30);  // Make Char of TenthDigit and then display it on LCD
+ 166   1      
+ 167   1      UnitDigit = numb - TenthDigit*10;
+ 168   1      
+ 169   1      lcddata(UnitDigit+0x30);   // Make Char of UnitDigit and then display it on LCD
+ 170   1      lcddata('.');
+ 171   1      decimal=(j%10)+0x30;
+ 172   1      lcddata(decimal);
+ 173   1      del(2000000);
+ 174   1      }
+ 175          void  string (char *str)  /* Send string to LCD function */
+ 176          {
+ 177   1        int i;
+ 178   1        for(i=0;str[i]!=0;i++)  /* Send each char of string till the NULL */
+C51 COMPILER V9.60.0.0   CALCULATOR                                                        09/27/2022 11:10:43 PAGE 4   
+
+ 179   1        {
+ 180   2          del(10);
+ 181   2      
+ 182   2          lcddata(str[i]);  /* Call LCD data write */
+ 183   2        }
+ 184   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1150    ----
+   CONSTANT SIZE    =     15    ----
+   XDATA SIZE       =   ----      29
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

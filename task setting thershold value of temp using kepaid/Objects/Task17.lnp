@@ -1,0 +1,5 @@
+".\Objects\STARTUP.obj",
+".\Objects\temprature.obj",
+".\Objects\keypaid.obj" 
+TO ".\Objects\Task17" 
+PRINT(".\Listings\Task17.m51") RAMSIZE(256) 

@@ -1,0 +1,59 @@
+#include<reg51.h>
+#define LED P0
+sbit A=P2^4;
+sbit b=P2^3;
+sbit C=P2^2;
+void delay(unsigned int);
+int cntr_10ms=0; 
+void timer0(void) interrupt 1
+{
+	cntr_10ms ++ ;
+	if (cntr_10ms >= 111)                //if counter reaches 10 it means 100 ms have passed
+	{
+	
+		
+		A=1;	b=1; C=1;
+		LED = 0xFF;  
+		
+
+		A=1;	b=1; C=0;
+		LED = 0xFF;  
+	
+		A=1;	b=0; C=1;
+		LED = 0xFF;  
+		
+		A=1;	b=0; C=0;
+		LED = 0xFF;  
+	
+
+		A=0;	b=1; C=1;
+		LED = 0xFF;  
+
+
+		
+		A=0;	b=1; C=0;
+		LED = 0xFF;  
+	
+	
+		A=0;	b=0; C=1;
+		LED = 0xFF;  
+	
+		A=0;	b=0; C=0;
+		LED = 0xFF;  
+		cntr_10ms=0;
+	}
+
+}	
+
+	void main(void)
+{
+
+
+  TMOD = 0x02;    // Timer 0 Mode 2
+  TH0= -85;     //initial value for 1ms
+  IE=0x82;
+  TR0 = 1;     // timer start
+	while(1)
+	{}
+}
+

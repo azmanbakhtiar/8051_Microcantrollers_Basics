@@ -1,0 +1,191 @@
+C51 COMPILER V9.60.0.0   TEMPRATURE                                                        09/27/2022 11:10:43 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE TEMPRATURE
+OBJECT MODULE PLACED IN .\Objects\temprature.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE temprature.c LARGE OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\L
+                    -istings\temprature.lst) TABS(2) OBJECT(.\Objects\temprature.obj)
+
+line level    source
+
+   1          #include<reg51.h>
+   2          #include "temprature.h"
+   3          
+   4          
+   5          unsigned char temp_lsb=0,temp_msb=0;
+   6          unsigned char Unite,Ten,Hunderd,intpart,decpart;
+   7          char temp_f;
+   8          unsigned char temp_c;
+   9          sbit DQ= P3^7;
+  10          
+  11          
+  12          void ow_reset(void)
+  13          {
+  14   1      DQ = 1; //pull DQ line low
+  15   1      delay_18B20(8); // leave it low for 480us
+  16   1      DQ = 0; // allow line to return high
+  17   1      delay_18B20(65); // wait for presence
+  18   1      DQ=1;
+  19   1      delay_18B20(20);    
+  20   1      } // 
+  21          
+  22          // delay
+  23          void delay_18B20(unsigned int ud){
+  24   1          while(ud--); //
+  25   1      }
+  26          
+  27          // READ_BYTE - reads a byte from the one-wire bus.
+  28          unsigned char read_byte(void)
+  29          {
+  30   1          unsigned char i=0;
+  31   1          unsigned char dat = 0;
+  32   1          for (i=8;i>0;i--){
+  33   2                DQ = 0;
+  34   2                dat>>=1;
+  35   2                DQ = 1;
+  36   2                if(DQ)
+  37   2                dat |= 0x80;
+  38   2                delay_18B20(4);
+  39   2          }
+  40   1          return(dat);
+  41   1      }
+  42          
+  43          // WRITE_BYTE - writes a byte to the one-wire bus.
+  44          void write_byte(char dat)
+  45          {
+  46   1          unsigned char i=0;
+  47   1          for (i=8; i>0; i--){
+  48   2              DQ = 0;
+  49   2              DQ = dat&0x01;
+  50   2              delay_18B20(5);
+  51   2              DQ = 1;
+  52   2              dat>>=1;
+  53   2          }
+  54   1      }
+C51 COMPILER V9.60.0.0   TEMPRATURE                                                        09/27/2022 11:10:43 PAGE 2   
+
+  55          
+  56          void Read_Temperature(void)
+  57          {
+  58   1      ow_reset();
+  59   1      write_byte(0xCC); //Skip ROM
+  60   1        
+  61   1      write_byte(0x44); // Start Conversion
+  62   1      delay_18B20(10); 
+  63   1      ow_reset();
+  64   1      write_byte(0xCC); // Skip ROM
+  65   1      write_byte(0xBE); // Read Scratch Pad
+  66   1      delay_18B20(10);
+  67   1        
+  68   1      temp_msb = read_byte();  
+  69   1      temp_lsb = read_byte(); 
+  70   1      
+  71   1      temp_c = ((temp_lsb*256+temp_msb)>>4);
+  72   1      temp_f = (((int)temp_c)* 9)/5 + 32;
+  73   1      
+  74   1      
+  75   1      }
+  76          void hex2lcd(unsigned char z){
+  77   1      
+  78   1        Hunderd=(z/100) + 0x30; //hundred
+  79   1        Ten=(z%100/10) + 0x30; //ten
+  80   1        Unite=(z%10) + 0x30; //uni
+  81   1        intpart = (int)z;
+  82   1        decpart = (z - intpart) + 0x30;
+  83   1        lcd_write(Hunderd);
+  84   1        lcd_write(Ten);
+  85   1        lcd_write(Unite);
+  86   1        lcd_string(".");
+  87   1        lcd_write(decpart);
+  88   1      }
+  89          
+  90            
+  91          
+  92          void body()
+  93          { 
+  94   1      
+  95   1        LCD_Command(0xc0);
+  96   1        Read_Temperature();
+  97   1        hex2lcd(temp_c);
+  98   1        lcd_string("C ");
+  99   1          hex2lcd(temp_f);
+ 100   1        lcd_string("F");
+ 101   1        
+ 102   1      
+ 103   1        }
+ 104          
+ 105            
+ 106          
+ 107          
+ 108          
+ 109          
+ 110          
+ 111          #define LCD_data P0
+ 112          
+ 113          sbit En=P2^7;
+ 114          sbit Rs=P2^6;
+ 115          sbit Wr=P2^5;
+ 116          
+C51 COMPILER V9.60.0.0   TEMPRATURE                                                        09/27/2022 11:10:43 PAGE 3   
+
+ 117          
+ 118          void lcd_init()
+ 119          {
+ 120   1        delay1(20);   /* LCD Power ON Initialization time >15ms */
+ 121   1        LCD_Command (0x38); /* Initialization of 16X2 LCD in 8bit mode */
+ 122   1        LCD_Command (0x0E); /* Display ON Cursor blinking */
+ 123   1        LCD_Command (0x06); /* Auto Increment cursor */
+ 124   1        LCD_Command (0x01); /* clear display */
+ 125   1      
+ 126   1      
+ 127   1      }
+ 128          void lcd_string(unsigned char *lcd_data)
+ 129          {
+ 130   1         while(*lcd_data)
+ 131   1         {
+ 132   2         lcd_write(*lcd_data++);
+ 133   2         }
+ 134   1      
+ 135   1      }
+ 136          
+ 137          void LCD_Command (unsigned char cmd)  
+ 138          {
+ 139   1        LCD_data= cmd;
+ 140   1        Rs=0;       /* command reg. */
+ 141   1        Wr=0;       /* Write operation */
+ 142   1        En=1; 
+ 143   1        delay1(1);
+ 144   1        En=0;
+ 145   1        delay1(5);
+ 146   1      }
+ 147          void lcd_write(unsigned char lcd_data)
+ 148          {
+ 149   1      LCD_data=lcd_data;
+ 150   1      Rs=1;
+ 151   1      Wr=0;
+ 152   1      En=1;
+ 153   1      delay1(1);
+ 154   1      En=0;
+ 155   1      
+ 156   1      }
+ 157          void delay1(unsigned int count)  /* Function to provide delay Approx 1ms */
+ 158          {
+ 159   1        int i,j;
+ 160   1        for(i=0;i<count;i++)
+ 161   1        for(j=0;j<112;j++);
+ 162   1      }
+ 163          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    492    ----
+   CONSTANT SIZE    =      7    ----
+   XDATA SIZE       =      9       3
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

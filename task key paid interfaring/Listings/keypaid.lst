@@ -1,0 +1,158 @@
+C51 COMPILER V9.60.0.0   KEYPAID                                                           08/26/2022 00:52:39 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE KEYPAID
+OBJECT MODULE PLACED IN .\Objects\keypaid.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE keypaid.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\k
+                    -eypaid.lst) TABS(2) OBJECT(.\Objects\keypaid.obj)
+
+line level    source
+
+   1          
+   2          #include<reg51.h>
+   3          #define lcd P0
+   4          sbit rs=P2^6;
+   5          sbit rw=P2^5;
+   6          sbit en=P2^7;
+   7          
+   8          sbit r1=P1^0;
+   9          sbit r2=P1^1;
+  10          sbit r3=P1^2;
+  11          sbit r4=P1^3;
+  12          sbit c1=P1^4;
+  13          sbit c2=P1^5;
+  14          sbit c3=P1^6;
+  15          sbit c4=P1^7;
+  16                            
+  17          void lcd_init();
+  18          void cmd(unsigned char );
+  19          void dat(unsigned char );
+  20          lcd_string(unsigned char *);
+  21          void delay(unsigned int );
+  22          void keypad(void);
+  23          void main()
+  24          {
+  25   1           cmd(0x38);
+  26   1              cmd(0x0e);
+  27   1              cmd(0x06);
+  28   1           lcd_string("Enter the key:");
+  29   1         cmd(0xc0);
+  30   1           cmd(0x14);
+  31   1          
+  32   1          while(1) {
+  33   2          
+  34   2           
+  35   2             
+  36   2               keypad();
+  37   2          
+  38   2          
+  39   2          }
+  40   1      }
+  41          void keypad()
+  42          {
+  43   1          c1=c2=c3=c4=1;
+  44   1          r1=0;r2=1;r3=1;r4=1;
+  45   1          if(c1==0){
+  46   2              while(c1==0);
+  47   2              dat('7');
+  48   2          } else if(c2==0) {
+  49   2              while(c2==0);
+  50   2              dat('8');
+  51   2          } else if(c3==0) {
+  52   2              while(c3==0);
+  53   2              dat('9');
+  54   2          } else if(c4==0) {
+C51 COMPILER V9.60.0.0   KEYPAID                                                           08/26/2022 00:52:39 PAGE 2   
+
+  55   2              while(c4==0);
+  56   2              dat('/');
+  57   2          }
+  58   1          r1=1;r2=0;r3=1;r4=1;
+  59   1          if(c1==0){
+  60   2              while(c1==0);
+  61   2              dat('4');
+  62   2          } else if(c2==0) {
+  63   2              while(c2==0);
+  64   2              dat('5');
+  65   2          } else if(c3==0) {
+  66   2              while(c3==0);
+  67   2              dat('6');
+  68   2          } else if(c4==0) {
+  69   2              while(c4==0);
+  70   2              dat('*');
+  71   2          }
+  72   1          r1=1;r2=1;r3=0;r4=1;
+  73   1          if(c1==0){
+  74   2              while(c1==0);
+  75   2              dat('1');
+  76   2          } else if(c2==0) {
+  77   2              while(c2==0);
+  78   2              dat('2');
+  79   2          } else if(c3==0) {
+  80   2              while(c3==0);
+  81   2              dat('3');
+  82   2          } else if(c4==0) {
+  83   2              while(c4==0);
+  84   2              dat('-');
+  85   2          }
+  86   1          r1=1;r2=1;r3=1;r4=0;
+  87   1          if(c1==0){
+  88   2              while(c1==0);
+  89   2              cmd(0x01);
+  90   2          } else if(c2==0) {
+  91   2              while(c2==0);
+  92   2              dat('0');
+  93   2          } else if(c3==0) {
+  94   2              while(c3==0);
+  95   2              dat('=');
+  96   2          } else if(c4==0) {
+  97   2              while(c4==0);
+  98   2              dat('+');
+  99   2          }
+ 100   1      }
+ 101          
+ 102          void cmd(unsigned char x)
+ 103          {
+ 104   1              lcd=x;
+ 105   1              rs=0;
+ 106   1              rw=0;
+ 107   1              en=1;
+ 108   1              delay(1000);
+ 109   1              en=0;
+ 110   1      }
+ 111          void dat(unsigned char y)
+ 112          {
+ 113   1              lcd=y;
+ 114   1              rs=1;
+ 115   1              rw=0;
+ 116   1              en=1;
+C51 COMPILER V9.60.0.0   KEYPAID                                                           08/26/2022 00:52:39 PAGE 3   
+
+ 117   1              delay(1000);
+ 118   1              en=0;
+ 119   1      }
+ 120          lcd_string(unsigned char *s)
+ 121          {
+ 122   1          while(*s)
+ 123   1              dat(*s++);
+ 124   1      }
+ 125          void delay(unsigned int z)
+ 126          {
+ 127   1        unsigned int i;
+ 128   1        for(i=0;i<=z;i++);
+ 129   1      }
+*** WARNING C290 IN LINE 124 OF keypaid.c: missing return value
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    328    ----
+   CONSTANT SIZE    =     15    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

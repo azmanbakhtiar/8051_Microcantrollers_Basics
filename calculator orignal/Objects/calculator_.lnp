@@ -1,0 +1,7 @@
+".\Objects\calculator.obj",
+".\Objects\STARTUP.obj",
+".\Objects\final_cal.obj",
+".\Objects\temprature.obj",
+".\Objects\time.obj" 
+TO ".\Objects\calculator'" 
+PRINT(".\Listings\calculator'.m51") RAMSIZE(256) 

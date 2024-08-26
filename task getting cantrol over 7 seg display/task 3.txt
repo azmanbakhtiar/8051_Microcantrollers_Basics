@@ -1,0 +1,132 @@
+#include <reg51.h>
+#include <stdio.h>
+#define SEGD P0
+sbit A=P2^4;
+sbit b=P2^3;
+sbit C=P2^2;
+
+void timerdelay();
+void show();
+void main(void)
+{
+		
+		
+		A=1;	b=1; C=1;
+		
+		show();
+		A=1;	b=1; C=0;
+	show();
+
+		A=1;	b=0; C=1;
+	show();
+
+	A=1;	b=0; C=0;
+	show();
+
+	A=0;	b=1; C=1;
+	show();
+
+	A=0;	b=1; C=0;
+	show();
+
+	A=0;	b=0; C=1;
+	show();
+
+	A=0;	b=0; C=0;
+	show();
+	
+
+
+		
+}
+ void timerdelay()
+ {
+	  TMOD=0x01;  //Using timer 0 in 16 Bit mode 1
+    
+	  TH0=0xA5;	//Generating 25 ms delay
+    TL0=0xFE;
+	 
+    TR0=1;
+    while (TF0==0);
+		TR0=0;
+	  TF0=0;
+	}
+void show()
+{
+	int x;
+	SEGD = 0x3F;  
+		for (x=0; x<20; x++)   // Total of 500 ms delay
+	{
+		timerdelay();  //25 ms
+	}
+		SEGD = 0x06; 
+		for (x=0; x<20; x++)   // Total of 500 ms delay
+	{
+		timerdelay();  //25 ms
+	}
+     	SEGD = 0x5B;
+		for (x=0; x<20; x++)   // Total of 500 ms delay
+	{
+		timerdelay();  //25 ms
+	}
+        SEGD = 0x4F;
+		for (x=0; x<20; x++)   // Total of 500 ms delay
+	{
+		timerdelay();  //25 ms
+	}
+        SEGD = 0x66; 
+		for (x=0; x<20; x++)   // Total of 500 ms delay
+	{
+		timerdelay();  //25 ms
+	}
+        SEGD = 0x6D; 
+		for (x=0; x<20; x++)   // Total of 500 ms delay
+	{
+		timerdelay();  //25 ms
+	}
+        SEGD = 0x7D;  
+		for (x=0; x<20; x++)   // Total of 500 ms delay
+	{
+		timerdelay();  //25 ms
+	}
+        SEGD = 0x07; 
+		for (x=0; x<20; x++)   // Total of 500 ms delay
+	{
+		timerdelay();  //25 ms
+	}
+        SEGD = 0x7F; 
+		for (x=0; x<20; x++)   // Total of 500 ms delay
+	{
+		timerdelay();  //25 ms
+	}
+        SEGD = 0x6F; 
+		for (x=0; x<20; x++)   // Total of 500 ms delay
+	{
+		timerdelay();  //25 ms
+	}
+        SEGD = 0x77;  
+		for (x=0; x<20; x++)   // Total of 500 ms delay
+	{
+		timerdelay();  //25 ms
+	}
+        SEGD = 0x7C; 
+		for (x=0; x<20; x++)   // Total of 500 ms delay
+	{
+		timerdelay();  //25 ms
+	}
+        SEGD = 0x39; 
+		for (x=0; x<20; x++)   // Total of 500 ms delay
+	{
+		timerdelay();  //25 ms
+	}
+        SEGD = 0x5E; 
+		for (x=0; x<20; x++)   // Total of 500 ms delay
+	{
+		timerdelay();  //25 ms
+	}
+        SEGD = 0x79;  	
+		for (x=0; x<20; x++)   // Total of 500 ms delay
+	{
+		timerdelay();  //25 ms
+	}
+}

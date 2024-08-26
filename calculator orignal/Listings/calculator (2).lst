@@ -1,0 +1,29 @@
+C51 COMPILER V9.60.0.0   CALCULATOR                                                        09/06/2022 04:37:09 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE CALCULATOR
+OBJECT MODULE PLACED IN .\Objects\calculator.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE calculator.c LARGE OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\L
+                    -istings\calculator.lst) TABS(2) OBJECT(.\Objects\calculator.obj)
+
+line level    source
+
+   1          #include<reg51.h>
+   2          #include "cal.h"
+   3          #include "temprature.h"
+   4          
+   5          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   ----    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

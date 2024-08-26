@@ -1,0 +1,256 @@
+#include<reg51.h>
+sbit output=P2^0; //Output to motor
+int count;
+
+void delay(unsigned int msec) // Function for delay
+{
+int i,j;
+for(i=0;i<msec;i++)
+for(j=0;j<1275;j++);
+}
+
+void timer(int msec) // Function for timer
+{
+int i;
+TR1=1;
+for(i=0;i<msec;i++)
+{
+while(TF1==0);
+TF1=0;
+}
+TR1=0;
+}
+void main()
+{
+int i;
+TMOD=0x20; // Mode2
+TH1= -23; // 50usec timer
+output=0;
+
+do
+{
+
+
+for(i=0;i<50;i++){
+	output=1;
+timer(20);
+output=0;
+timer(360);
+		
+
+		}
+delay(70);
+for(i=0;i<100;i++)
+		{
+output=1;
+timer(30);
+output=0;
+timer(360);
+
+}
+delay(70);}
+while(1);
+}
+
+
+
+
+
+
+
+#include<reg51.h>
+sbit output=P2^0; //Output to motor   // Port declaration
+void delay(unsigned int msec) // Function for delay
+{
+int i,j;
+for(i=0;i<msec;i++)
+for(j=0;j<1275;j++);
+}
+void delay_ms(unsigned int ms_count)
+{
+	unsigned int i,j;
+	for(i=0; i<ms_count; i++)
+	{
+		for(j=0; j<7; j++);
+	}
+} 
+void main(void)
+{
+
+	int i;
+while(1)
+{
+
+for(i=0;i<50;i++)
+	{
+output=1;
+delay_ms(5);
+output=0;
+delay_ms(250);
+	}delay(40);
+for(i=0;i<50;i++)
+	{	
+	output=1;
+delay_ms(30);
+output=0;
+delay_ms(250);
+
+
+	
+	}
+		delay(40);
+}
+
+	
+	
+
+
+
+	
+
+	
+}
+
+
+
+		
+
+
+
+
+#include<reg51.h>
+
+
+sbit rs=P2^6;
+sbit rw=P2^5;
+sbit en=P2^7;
+
+
+sbit servo=P2^0;
+sbit btn=P3^0;
+sbit btn1=P3^2;
+void delay(unsigned int);
+void delay_ms(unsigned int ms_count);
+void show(unsigned char *s);
+void lcd_init();
+void cmd(unsigned char a);
+void dat(unsigned char b);
+void show(unsigned char *s);
+void lcd_delay();
+
+char k;
+
+void dat_int(int time_val)			// Function to send three digit number
+{
+	int int_amt;
+	int_amt = time_val/100;
+	dat(int_amt+48);
+	time_val = time_val%100;
+	int_amt = time_val/10;
+	dat(int_amt+48);
+	int_amt = time_val%10;	 
+	dat(int_amt+48);
+}
+
+
+		unsigned char count,z=22;
+void timer0(void) interrupt 1
+{
+
+count++;
+
+				delay_ms(2);	
+
+if (count==220)
+{	if (btn==0)
+	  { z++;
+						delay_ms(20000);	}
+		if (btn1==0)
+	  { z--;
+		delay_ms(20000);}
+	servo=1;
+	delay_ms(z);
+	
+
+	
+	count=0;
+	
+}	
+}
+void delay_ms(unsigned int ms_count)
+{
+	unsigned int i;
+	for(i=0; i<ms_count; i++);
+	
+	
+} 
+
+	void main(void)
+{
+
+lcd_init();
+  TMOD = 0x02;    // Timer 0 Mode 2
+  TH0= -84;     //initial value for 1ms
+  IE=0x82;
+  TR0 = 1;     // timer start
+
+
+		  
+	while(1)
+	{
+				dat_int(z);
+		 cmd(0x01);
+	servo=0;
+	
+		servo=0;
+
+}
+}
+void lcd_init()
+{
+    cmd(0x38);
+    cmd(0x0e);
+    cmd(0x01);
+    cmd(0x06);
+    cmd(0x0c);
+    cmd(0x80);
+}
+void cmd(unsigned char a)
+{
+    P0=a;
+    rs=0;
+    rw=0;
+    en=1;
+    lcd_delay();
+    en=0;
+}
+void dat(unsigned char b)
+{
+    P0=b;
+    rs=1;
+    rw=0;
+    en=1;
+    lcd_delay();
+    en=0;
+}
+void show(unsigned char *s)
+{
+    while(*s) {
+        dat(*s++);
+    }
+}
+void lcd_delay()
+{
+    unsigned int lcd_delay;
+    for(lcd_delay=0;lcd_delay<=60;lcd_delay++);
+}
+
+
+
+
+
+
+
+
+
+

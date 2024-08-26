@@ -1,0 +1,51 @@
+C51 COMPILER V9.60.0.0   TASK9                                                             08/21/2022 22:22:54 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE TASK9
+OBJECT MODULE PLACED IN .\Objects\task9.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE task9.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\tas
+                    -k9.lst) TABS(2) OBJECT(.\Objects\task9.obj)
+
+line level    source
+
+   1          #include<reg51.h>
+   2          sbit led=P2^0;
+   3          void delay(unsigned int);
+   4          
+   5          void timer0(void) interrupt 1
+   6          {
+   7   1        unsigned char count;
+   8   1      count++;
+   9   1      if (count==110)
+  10   1      { 
+  11   2        led=~led;
+  12   2        count=0;
+  13   2      } 
+  14   1      }
+  15            void main(void)
+  16          {
+  17   1        unsigned int z;
+  18   1        led=0;
+  19   1        TMOD = 0x02;    // Timer 0 Mode 2
+  20   1        TH0= -84;     //initial value for 1ms
+  21   1        IE=0x82;
+  22   1        TR0 = 1;     // timer start
+  23   1        while(1)
+  24   1        {}
+  25   1      }
+*** WARNING C280 IN LINE 17 OF task9.c: 'z': unreferenced local variable
+  26          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     32    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

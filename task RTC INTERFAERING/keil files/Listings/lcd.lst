@@ -1,0 +1,297 @@
+C51 COMPILER V9.60.0.0   LCD                                                               08/25/2022 23:07:24 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE LCD
+OBJECT MODULE PLACED IN .\Objects\lcd.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE lcd.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\lcd.l
+                    -st) TABS(2) OBJECT(.\Objects\lcd.obj)
+
+line level    source
+
+   1          #include<reg51.h>
+   2          #include "lcd.h"
+   3          #include "delay.h"
+   4          
+   5           sbit CE=P3^5;
+   6          sbit CLk=P3^6;
+   7          sbit io=P3^4;
+   8           
+   9          #define dataport P0       // LCD dataport connected to PORT1
+  10          sbit rs = P2^6;  //RS pin connected to pin 2 of port 3
+  11          sbit rw = P2^5;  // RW pin connected to pin 3 of port 3
+  12          sbit en  =  P2^7;
+  13           
+  14           
+  15           
+  16          /* 16x2 lcd Specification */
+  17          #define LCDMaxLines 2
+  18          #define LCDMaxChars 16
+  19          #define LineOne 0x80
+  20          #define LineTwo 0xc0
+  21           
+  22          #define BlankSpace ' '
+  23           
+  24          //LCD initilization
+  25          void LCD_Init()
+  26          {
+  27   1          delay_us(5000);
+  28   1         lcd_WriteCmd(0x02);  //initilize the LCD in 4bit Mode
+  29   1         lcd_WriteCmd(0x28);
+  30   1         lcd_WriteCmd(0x0C);  // display ON cursor ON
+  31   1         lcd_WriteCmd(0x01);  // clear the LCD
+  32   1         lcd_WriteCmd(0x80);  // move the Cursor to First line First Position
+  33   1       
+  34   1      }
+  35           
+  36           
+  37          // lcd Write command function
+  38          void lcd_WriteCmd( char a)
+  39          {
+  40   1       
+  41   1         dataport=(a & 0xf0);        
+  42   1         rs=0;                      
+  43   1         rw=0;                 
+  44   1         en=1;                 
+  45   1         delay_us(1);
+  46   1         en=0;
+  47   1         delay_us(1);                  
+  48   1         dataport=((a<<4) & 0xf0);   
+  49   1         rs=0;                    
+  50   1         rw=0;                    
+  51   1         en=1;                      
+  52   1         delay_us(1);
+  53   1         en=0;
+  54   1         delay_us(1);
+C51 COMPILER V9.60.0.0   LCD                                                               08/25/2022 23:07:24 PAGE 2   
+
+  55   1      }
+  56           
+  57           
+  58           // lcd writedata function
+  59          void lcd_Writedata( char a)
+  60          {
+  61   1       
+  62   1       
+  63   1         dataport=(a & 0xf0);        
+  64   1           rs=1;                      
+  65   1           rw=0;                      
+  66   1           en=1;                      
+  67   1          delay_us(1);
+  68   1           en=0;
+  69   1       
+  70   1         delay_us(1);                
+  71   1       
+  72   1         dataport=((a <<4) & 0xf0);  
+  73   1           rs=1;                    
+  74   1           rw=0;                     
+  75   1           en=1;                      
+  76   1          delay_us(1);
+  77   1           en=0;
+  78   1       
+  79   1         delay_us(1);
+  80   1       
+  81   1      }
+  82          
+  83           
+  84           //lcd gotolinetwo fuction
+  85          void lcd_GoToLineTwo()
+  86          {
+  87   1         lcd_WriteCmd(LineTwo);   // move the Cursor to Second line First Position
+  88   1      }
+  89           
+  90           
+  91           
+  92          //lcd go to X(first row), Y(second row) line
+  93          void lcd_GoToXY(char row, char col)
+  94          {
+  95   1         char pos;
+  96   1       
+  97   1          if(row<LCDMaxLines)
+  98   1            {
+  99   2               pos= LineOne | (row << 6);
+ 100   2                                          
+ 101   2       
+ 102   2              if(col<LCDMaxChars)
+ 103   2                 pos= pos+col;            
+ 104   2                                          
+ 105   2       
+ 106   2               lcd_WriteCmd(pos);        
+ 107   2             }
+ 108   1      }
+ 109           
+ 110          
+ 111          //lcd display string function
+ 112          void lcd_DisplayString(char *string_ptr)
+ 113          {
+ 114   1         while(*string_ptr)
+ 115   1          lcd_Writedata(*string_ptr++);
+ 116   1          }
+C51 COMPILER V9.60.0.0   LCD                                                               08/25/2022 23:07:24 PAGE 3   
+
+ 117           
+ 118           
+ 119          //lcd display rtc time function
+ 120          void lcd_DisplayRtcTime(char hour,char min,char sec)
+ 121          {
+ 122   1        char t=0x01;
+ 123   1        if((hour&0x80)==0)
+ 124   1          t=0x03;
+ 125   1          lcd_Writedata(((hour>>4) & t) + 0x30);
+ 126   1          lcd_Writedata((hour & 0x0f) + 0x30);
+ 127   1          lcd_Writedata(':');
+ 128   1       
+ 129   1          lcd_Writedata(((min>>4) & 0x0f) + 0x30);
+ 130   1          lcd_Writedata((min & 0x0f) + 0x30);
+ 131   1          lcd_Writedata(':');
+ 132   1       
+ 133   1          lcd_Writedata(((sec>>4) & 0x0f) + 0x30);
+ 134   1          lcd_Writedata((sec & 0x0f) + 0x30);
+ 135   1       
+ 136   1       }
+ 137           
+ 138           
+ 139           // lcd display rtc date function
+ 140          void lcd_DisplayRtcDate(char day,char month,char year)
+ 141           {
+ 142   1           lcd_Writedata(((day>>4) & 0x0f) + 0x30);
+ 143   1           lcd_Writedata((day & 0x0f) + 0x30);
+ 144   1           lcd_Writedata('/');
+ 145   1       
+ 146   1           lcd_Writedata(((month>>4) & 0x0f) + 0x30);
+ 147   1           lcd_Writedata((month & 0x0f) + 0x30);
+ 148   1           lcd_Writedata('/');
+ 149   1       
+ 150   1           lcd_Writedata(((year>>4) & 0x0f) + 0x30);
+ 151   1           lcd_Writedata((year & 0x0f) + 0x30);
+ 152   1       
+ 153   1       }
+ 154           
+ 155           
+ 156          void Ext_int_Init()       
+ 157          {
+ 158   1        EA  = 1;    /* Enable global interrupt */
+ 159   1        ES = 1;     /* Enable serial interrupt */     
+ 160   1      }
+ 161          
+ 162          void UART_Init()
+ 163          {
+ 164   1        TMOD = 0x20;    /* Timer 1, 8-bit auto reload mode */
+ 165   1        TH1 = 0xFD;   /* Load value for 9600 baud rate */
+ 166   1        TL1=0xFF;
+ 167   1        SCON = 0x50;    /* Mode 1, reception enable */
+ 168   1        TR1 = 1;    /* Start timer 1 */
+ 169   1      }
+ 170          
+ 171          
+ 172          void Serial_ISR() interrupt 4    
+ 173          { if(RI==1){
+ 174   2        array[jj]=SBUF; 
+ 175   2        RI = 0; /* Clear RI flag */
+ 176   2        jj++;
+ 177   2        } 
+ 178   1      
+C51 COMPILER V9.60.0.0   LCD                                                               08/25/2022 23:07:24 PAGE 4   
+
+ 179   1      } 
+ 180           void SCLK_Pulse (void)
+ 181          {
+ 182   1        CLk=1;
+ 183   1        CLk=0;
+ 184   1      }
+ 185          void Send_Bit (unsigned int value)
+ 186          {
+ 187   1          if (value != 0){
+ 188   2              io=1;
+ 189   2          }
+ 190   1          else {
+ 191   2              io=0;
+ 192   2          }
+ 193   1      }
+ 194           void Write_Byte(int content)
+ 195          {
+ 196   1      
+ 197   1          for (i=0;i<8;i++){
+ 198   2                   x = (content & (1 << i));  //Write to Address
+ 199   2                   Send_Bit(x);
+ 200   2                   SCLK_Pulse();
+ 201   2              }
+ 202   1      }
+ 203          
+ 204          void Read_Burst (void)
+ 205          {
+ 206   1          CE=1;
+ 207   1          Write_Byte(ADR_RD_BURST);
+ 208   1          for (i=0;i<8;i++){
+ 209   2              temp = 0;
+ 210   2          for (j=0;j<8;j++){
+ 211   3                  temp >>= 1;
+ 212   3                      if (io == 1){
+ 213   4      
+ 214   4                          temp |= 0x80;
+ 215   4                             }
+ 216   3                             else {
+ 217   4      
+ 218   4                          temp  &= 0x7F;
+ 219   4                             }
+ 220   3      
+ 221   3                      SCLK_Pulse();
+ 222   3                      }
+ 223   2          clock_data[i] = temp;
+ 224   2          }
+ 225   1          CE=0;
+ 226   1      }
+ 227          
+ 228          void Read_Byte(int addr)
+ 229          {
+ 230   1          temp = 0;
+ 231   1          Write_Byte(addr);
+ 232   1          for (j=0;j<8;j++){
+ 233   2              temp >>= 1;
+ 234   2              
+ 235   2              if (io == 1)
+ 236   2                  temp |= 0x80;
+ 237   2              else 
+ 238   2                  temp  &= 0x7F;
+ 239   2      
+ 240   2              SCLK_Pulse();
+C51 COMPILER V9.60.0.0   LCD                                                               08/25/2022 23:07:24 PAGE 5   
+
+ 241   2              }
+ 242   1      }
+ 243          void write_data(char cmd,char value)
+ 244          {
+ 245   1        CE=1;
+ 246   1        Write_Byte(cmd);  //cmd
+ 247   1        Write_Byte(value);  //data
+ 248   1        CE=0;
+ 249   1      }
+ 250           void set_time(char hrs, char mins, char secs , char days,char month,char year)
+ 251           {
+ 252   1        write_data(ADR_WR_SEC,secs);//Go to seconds register
+ 253   1        
+ 254   1        write_data(ADR_WR_MIN,mins);  //Go to minute register
+ 255   1        
+ 256   1        write_data(ADR_WR_HR,hrs);  //Go to hour register
+ 257   1      
+ 258   1        write_data(ADR_WR_DATE,days);  //Go to date register
+ 259   1        
+ 260   1        write_data(ADR_WR_MON,month);  //Go to month register
+ 261   1        
+ 262   1        write_data(ADR_WR_DAY,0x01);  //Go to day register
+ 263   1        
+ 264   1        write_data(ADR_WR_YR,year);  //Go to year register
+ 265   1       }   
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    771    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     81      17
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

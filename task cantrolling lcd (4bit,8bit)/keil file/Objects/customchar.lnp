@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\lcdchar.obj" 
+TO ".\Objects\customchar" 
+PRINT(".\Listings\customchar.m51") RAMSIZE(256) 

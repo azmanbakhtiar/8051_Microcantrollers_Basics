@@ -1,0 +1,5 @@
+".\Objects\STARTUP.obj",
+".\Objects\IR.obj",
+".\Objects\lcd.obj" 
+TO ".\Objects\IRSENSOR" 
+PRINT(".\Listings\IRSENSOR.m51") RAMSIZE(256) 

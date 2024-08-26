@@ -1,0 +1,471 @@
+C51 COMPILER V9.60.0.0   TEMPRATURE                                                        09/14/2022 00:28:37 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE TEMPRATURE
+OBJECT MODULE PLACED IN .\Objects\temprature.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE temprature.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listing
+                    -s\temprature.lst) TABS(2) OBJECT(.\Objects\temprature.obj)
+
+line level    source
+
+   1          #include<reg51.h>
+   2          #include "temprature.h"
+   3          #define LCD_data P0
+   4          
+   5          sbit En=P2^7;
+   6          sbit Rs=P2^6;
+   7          sbit Wr=P2^5;
+   8          
+   9          sbit r0=P1^0;
+  10          sbit r1=P1^1;
+  11          sbit r2=P1^2;
+  12          sbit r3=P1^3;
+  13          sbit c0=P1^4;
+  14          sbit c1=P1^5;
+  15          sbit c2=P1^6;
+  16          sbit c3=P1^7;
+  17          
+  18          
+  19          int get_num(char ch) ;
+  20          unsigned int indexx=0;
+  21          unsigned char temp_lsb=0,temp_msb=0;
+  22          unsigned char Unite,Ten,Hunderd,intpart,decpart;
+  23          char temp_f;
+  24          unsigned char temp_c;
+  25          sbit DQ= P3^7;
+  26          sbit buzzer_pin=P1^5;
+  27          unsigned char Unite1,Ten1,Hunderd1;
+  28          unsigned char j=0;
+  29          unsigned char z;
+  30          unsigned char serial_values[5]={0};
+  31            unsigned int  k2,k1,p,ch1,ch2;
+  32            char scan_key();
+  33          
+  34          void ow_reset(void)
+  35          {
+  36   1      DQ = 1; //pull DQ line low
+  37   1      delay_18B20(8); // leave it low for 480us
+  38   1      DQ = 0; // allow line to return high
+  39   1      delay_18B20(65); // wait for presence
+  40   1      DQ=1;
+  41   1      delay_18B20(20);    
+  42   1      } // 
+  43          
+  44          // delay
+  45          void delay_18B20(unsigned int ud){
+  46   1          while(ud--); //
+  47   1      }
+  48          
+  49          // READ_BYTE - reads a byte from the one-wire bus.
+  50          unsigned char read_byte(void)
+  51          {
+  52   1          unsigned char i=0;
+  53   1          unsigned char dat = 0;
+  54   1          for (i=8;i>0;i--){
+C51 COMPILER V9.60.0.0   TEMPRATURE                                                        09/14/2022 00:28:37 PAGE 2   
+
+  55   2                DQ = 0;
+  56   2                dat>>=1;
+  57   2                DQ = 1;
+  58   2                if(DQ)
+  59   2                dat |= 0x80;
+  60   2                delay_18B20(4);
+  61   2          }
+  62   1          return(dat);
+  63   1      }
+  64          
+  65          // WRITE_BYTE - writes a byte to the one-wire bus.
+  66          void write_byte(char dat)
+  67          {
+  68   1          unsigned char i=0;
+  69   1          for (i=8; i>0; i--){
+  70   2              DQ = 0;
+  71   2              DQ = dat&0x01;
+  72   2              delay_18B20(5);
+  73   2              DQ = 1;
+  74   2              dat>>=1;
+  75   2          }
+  76   1      }
+  77          
+  78          void Read_Temperature(void)
+  79          {
+  80   1      ow_reset();
+  81   1      write_byte(0xCC); //Skip ROM
+  82   1      write_byte(0x44); // Start Conversion
+  83   1      delay_18B20(10); 
+  84   1      ow_reset();
+  85   1      write_byte(0xCC); // Skip ROM
+  86   1      write_byte(0xBE); // Read Scratch Pad
+  87   1      delay_18B20(10);
+  88   1        
+  89   1      temp_msb = read_byte(); // Sign byte + lsbit
+  90   1      temp_lsb = read_byte(); // Temp data plus lsb
+  91   1      
+  92   1      temp_c = ((temp_lsb*256+temp_msb)>>4);
+  93   1      temp_f = (((int)temp_c)* 9)/5 + 32;
+  94   1      
+  95   1      }
+  96          void hex2lcd(unsigned char z){
+  97   1      
+  98   1        Hunderd=(z/100) + 0x30; //hundred
+  99   1        Ten=(z%100/10) + 0x30; //ten
+ 100   1        Unite=(z%10) + 0x30; //uni
+ 101   1        intpart = (int)z;
+ 102   1        decpart = (z - intpart) + 0x30;
+ 103   1        lcd_write(Hunderd);
+ 104   1        lcd_write(Ten);
+ 105   1        lcd_write(Unite);
+ 106   1        lcd_string(".");
+ 107   1        lcd_write(decpart);
+ 108   1      }
+ 109          void timer0_intrupt (void) interrupt 1   // called after 50 ms 
+ 110          {
+ 111   1        indexx+=1;
+ 112   1        if(indexx==400)
+ 113   1        {
+ 114   2        LCD_Command(0x80);
+ 115   2        lcd_string("Temprature is:");
+ 116   2        LCD_Command(0xc0);
+C51 COMPILER V9.60.0.0   TEMPRATURE                                                        09/14/2022 00:28:37 PAGE 3   
+
+ 117   2        Read_Temperature();
+ 118   2        hex2lcd(temp_c);
+ 119   2      
+ 120   2        lcd_string(" C");
+ 121   2        indexx=0;
+ 122   2        }
+ 123   1        display_num_7seg(temp_c);
+ 124   1        values_on_ssd();
+ 125   1        
+ 126   1        if(temp_c>=p)
+ 127   1        {
+ 128   2          buzzer_pin=0;
+ 129   2          delay1(2);
+ 130   2          buzzer_pin=1;
+ 131   2          
+ 132   2        }
+ 133   1        buzzer_pin=1;
+ 134   1        TH0=0xFC;
+ 135   1        TL0=0x18;
+ 136   1      }
+ 137          
+ 138          void main()
+ 139          {
+ 140   1      
+ 141   1        lcd_init();
+ 142   1        lcd_string("Enter Thershold ");
+ 143   1          LCD_Command (0xC0);
+ 144   1        ch1=scan_key();
+ 145   1        k2=get_num(ch1);
+ 146   1        ch2=scan_key();
+ 147   1        k1=get_num(ch2);
+ 148   1        p=(k2*10)+k1;
+ 149   1      
+ 150   1        
+ 151   1        
+ 152   1        LCD_Command (0x38);
+ 153   1        while(1)
+ 154   1        {
+ 155   2        
+ 156   2        
+ 157   2        delay_18B20(65);
+ 158   2        IE=0x82; // enable timer 0 interrupt and serial interrupt
+ 159   2      
+ 160   2        TMOD = 0x21; // using timer0 in mode1 and timer1 in mode2
+ 161   2        SCON=0x50; // Asyncronous mode, 8-bit and 1-stop bit
+ 162   2        TH1=0xFD;
+ 163   2        TH0=0xFC;
+ 164   2        TL0=0x18;
+ 165   2        TR0=1;
+ 166   2        TR1=1;
+ 167   2      while(1)
+ 168   2        {
+ 169   3          display_num_serial(temp_c);
+ 170   3          serial_data();
+ 171   3      //  
+ 172   3        }
+ 173   2      }
+ 174   1      
+ 175   1      }
+ 176          
+ 177          
+ 178          void lcd_init()
+C51 COMPILER V9.60.0.0   TEMPRATURE                                                        09/14/2022 00:28:37 PAGE 4   
+
+ 179          {
+ 180   1        delay1(20);   /* LCD Power ON Initialization time >15ms */
+ 181   1        LCD_Command (0x38); /* Initialization of 16X2 LCD in 8bit mode */
+ 182   1        LCD_Command (0x0E); /* Display ON Cursor blinking */
+ 183   1        LCD_Command (0x06); /* Auto Increment cursor */
+ 184   1        LCD_Command (0x01); /* clear display */
+ 185   1        LCD_Command (0x80); /* cursor at home position */
+ 186   1      
+ 187   1      }
+ 188          void lcd_string(unsigned char *lcd_data)
+ 189          {
+ 190   1         while(*lcd_data)
+ 191   1         {
+ 192   2         lcd_write(*lcd_data++);
+ 193   2         }
+ 194   1      
+ 195   1      }
+ 196          
+ 197          void LCD_Command (unsigned char cmd)  
+ 198          {
+ 199   1        LCD_data= cmd;
+ 200   1        Rs=0;       /* command reg. */
+ 201   1        Wr=0;       /* Write operation */
+ 202   1        En=1; 
+ 203   1        delay1(1);
+ 204   1        En=0;
+ 205   1        delay1(5);
+ 206   1      }
+ 207          void lcd_write(unsigned char lcd_data)
+ 208          {
+ 209   1      LCD_data=lcd_data;
+ 210   1      Rs=1;
+ 211   1      Wr=0;
+ 212   1      En=1;
+ 213   1      delay1(1);
+ 214   1      En=0;
+ 215   1      
+ 216   1      }
+ 217          void delay1(unsigned int count)  /* Function to provide delay Approx 1ms */
+ 218          {
+ 219   1        int i,j;
+ 220   1        for(i=0;i<count;i++)
+ 221   1        for(j=0;j<112;j++);
+ 222   1      }
+ 223          
+ 224          
+ 225          
+ 226          unsigned char index=0;
+ 227          unsigned int select[]  =  {0x0C,0x08,0x04,0x00};
+ 228          unsigned int message[] = {0x3f,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x67};
+ 229          unsigned char values[4];
+ 230          
+ 231          void display_num_7seg(unsigned char num)
+ 232          {
+ 233   1       int i=3;
+ 234   1       while(num!=0)
+ 235   1       {
+ 236   2        values[i]=num%10;
+ 237   2         num=num/10;
+ 238   2         i--;
+ 239   2       }
+ 240   1       
+C51 COMPILER V9.60.0.0   TEMPRATURE                                                        09/14/2022 00:28:37 PAGE 5   
+
+ 241   1       }
+ 242          void values_on_ssd(void)
+ 243           {
+ 244   1        switch(values[index])
+ 245   1        {
+ 246   2          case 0:
+ 247   2             {
+ 248   3             P2=select[index];
+ 249   3             P0=message[0];    
+ 250   3             }
+ 251   2             break;
+ 252   2          case 1:
+ 253   2             {
+ 254   3             P2=select[index];
+ 255   3             P0=message[1];    
+ 256   3             }
+ 257   2             break;
+ 258   2          case 2:
+ 259   2             {
+ 260   3             P2=select[index];
+ 261   3             P0=message[2];    
+ 262   3             }
+ 263   2             break;
+ 264   2          case 3:
+ 265   2             {
+ 266   3              P2=select[index];
+ 267   3             P0=message[3];    
+ 268   3             }
+ 269   2             break;
+ 270   2          case 4:
+ 271   2             {
+ 272   3             P2=select[index];
+ 273   3             P0=message[4];    
+ 274   3             }
+ 275   2             break;
+ 276   2          case 5:
+ 277   2             {
+ 278   3              P2=select[index];
+ 279   3             P0=message[5];    
+ 280   3             }
+ 281   2             break;
+ 282   2          case 6:
+ 283   2             {
+ 284   3              P2=select[index];
+ 285   3             P0=message[6];    
+ 286   3             }
+ 287   2             break;
+ 288   2          case 7:
+ 289   2             {
+ 290   3             P2=select[index];
+ 291   3             P0=message[7];    
+ 292   3             }
+ 293   2             break;
+ 294   2          case 8:
+ 295   2             {
+ 296   3             P2=select[index];
+ 297   3             P0=message[8];    
+ 298   3             }
+ 299   2             break;
+ 300   2          case 9:
+ 301   2             {
+ 302   3             P2=select[index];
+C51 COMPILER V9.60.0.0   TEMPRATURE                                                        09/14/2022 00:28:37 PAGE 6   
+
+ 303   3             P0=message[9];    
+ 304   3             }
+ 305   2             break;
+ 306   2        default:
+ 307   2          break;
+ 308   2        }
+ 309   1       index+=1;
+ 310   1        if(index > 3)
+ 311   1                {
+ 312   2                  index=0;
+ 313   2                }
+ 314   1              }
+ 315          
+ 316          
+ 317            
+ 318          void display_num_serial(unsigned int z)
+ 319          {
+ 320   1        Hunderd1=(z/100) + 0x30; //hundred
+ 321   1        Ten1=(z%100/10) + 0x30; //ten
+ 322   1        Unite1=(z%10) + 0x30; //unit
+ 323   1        serial_values[0]= Hunderd1;
+ 324   1        serial_values[1]= Ten1;
+ 325   1        serial_values[2]= Unite1;
+ 326   1        serial_values[3]='\n';
+ 327   1       }
+ 328          void serial_data(void)
+ 329            {
+ 330   1         for(z=0;z<6;z++)
+ 331   1         {
+ 332   2         SBUF=serial_values[z];
+ 333   2           while(TI==0);
+ 334   2            TI=0;
+ 335   2            delay1(100);
+ 336   2         }
+ 337   1      
+ 338   1      
+ 339   1      //  while(arr[i]!='\0')
+ 340   1      //{
+ 341   1      //  SBUF=arr[i];
+ 342   1      //  while (TI==0);
+ 343   1      //  TI=0; 
+ 344   1      //  i++;
+ 345   1      //}
+ 346   1      //delay1(100);
+ 347   1      //i=0;
+ 348   1       }
+ 349          
+ 350          char scan_key()
+ 351          {
+ 352   1      unsigned char c;
+ 353   1      c='s';
+ 354   1      while(!(c=='0' && c=='1' &&  c=='2' && c=='3' && c=='4' && c=='5' && c=='6' && c=='7' && c=='8'
+ 355   1       && c=='9' && c=='+' && c=='-' && c=='=' && c=='$' && c=='*' && c=='/' ))
+ 356   1      {
+ 357   2      r0=0;r1=1;r2=1;r3=1;
+ 358   2      if(c0==0 && r0==0 ){lcddata('/');MSDelay(10000);return c='/';}
+ 359   2          if(c1==0 && r0==0){ lcddata('*');MSDelay(10000);return c= '*';}
+ 360   2      if(c2==0 && r0==0){ lcddata('-');MSDelay(10000);return c= '-';}
+ 361   2      if(c3==0 && r0==0){ lcddata('+');MSDelay(10000);return c= '+';}
+ 362   2        
+ 363   2      r0=1;r1=0;r2=1;r3=1;
+ 364   2      
+C51 COMPILER V9.60.0.0   TEMPRATURE                                                        09/14/2022 00:28:37 PAGE 7   
+
+ 365   2      if(c0==0 && r1==0){ lcddata('=');MSDelay(10000);return c= '=';}
+ 366   2          if(c1==0 && r1==0){ lcddata('9');MSDelay(10000);return c= '9';}
+ 367   2      if(c2==0 && r1==0){ lcddata('6');MSDelay(10000);return c= '6';}
+ 368   2      if(c3==0 && r1==0){ lcddata('3');MSDelay(10000);return c= '3';}
+ 369   2      
+ 370   2      r0=1;r1=1;r2=0;r3=1;
+ 371   2      
+ 372   2      if(c0==0 && r2==0){ lcddata('0');MSDelay(10000);return c= '0';}
+ 373   2          if(c1==0 && r2==0){ lcddata('8');MSDelay(10000);return c= '8';}
+ 374   2      if(c2==0 && r2==0){ lcddata('5');MSDelay(10000);return c= '5';}
+ 375   2      if(c3==0 && r2==0){ lcddata('2');MSDelay(10000);return c= '2';}
+ 376   2      
+ 377   2      r0=1;r1=1;r2=1;r3=0;
+ 378   2      
+ 379   2      if(c0==0 && r3==0){ lcddata('*');MSDelay(10000);return c= '*';}
+ 380   2          if(c1==0 && r3==0){ lcddata('7');MSDelay(10000);return c= '7';}
+ 381   2      if(c2==0 && r3==0){ lcddata('4');MSDelay(10000);return c= '4';}
+ 382   2      if(c3==0 && r3==0){ lcddata('1');MSDelay(10000);return c= '1';}
+ 383   2      }
+ 384   1      return 0;
+ 385   1      }
+ 386          void MSDelay(unsigned int itime)
+ 387            {
+ 388   1          unsigned int i, j;
+ 389   1          for(i=0;i< itime;i++)           
+ 390   1            for(j=0;j<5;j++);       
+ 391   1        }
+ 392          void lcdcmd(unsigned char value)
+ 393            {
+ 394   1          P0 = value;      
+ 395   1          Rs = 0;
+ 396   1          Wr = 0;
+ 397   1          En = 1;            
+ 398   1          MSDelay(50);
+ 399   1          En = 0;
+ 400   1      MSDelay(50);
+ 401   1          
+ 402   1        }
+ 403          void lcddata(unsigned char value)
+ 404            {
+ 405   1         P0 = value;  
+ 406   1          Rs = 1;
+ 407   1          Wr = 0;
+ 408   1          
+ 409   1          En = 1;          
+ 410   1          MSDelay(50);
+ 411   1          En = 0;
+ 412   1          MSDelay(50);
+ 413   1        }
+ 414          
+ 415          int get_num(char ch)         //convert char into int
+ 416          {
+ 417   1      switch(ch)
+ 418   1      {
+ 419   2      case '0': return 0; break;
+ 420   2      case '1': return 1; break;
+ 421   2      case '2': return 2; break;
+ 422   2      case '3': return 3; break;
+ 423   2      case '4': return 4; break;
+ 424   2      case '5': return 5; break;
+ 425   2      case '6': return 6; break;
+ 426   2      case '7': return 7; break;
+C51 COMPILER V9.60.0.0   TEMPRATURE                                                        09/14/2022 00:28:37 PAGE 8   
+
+ 427   2      case '8': return 8; break;
+ 428   2      case '9': return 9; break;
+ 429   2      }
+ 430   1      return 0;
+ 431   1      }
+ 432          
+ 433          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1609    ----
+   CONSTANT SIZE    =     37    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     64       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

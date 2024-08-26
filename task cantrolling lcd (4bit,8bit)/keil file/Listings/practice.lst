@@ -1,0 +1,24 @@
+C51 COMPILER V9.60.0.0   PRACTICE                                                          08/22/2022 00:04:45 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE PRACTICE
+OBJECT MODULE PLACED IN .\Objects\practice.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE practice.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\
+                    -practice.lst) TABS(2) OBJECT(.\Objects\practice.obj)
+
+line level    source
+
+   1          #include <reg51.h>
+   2          
+   3           void main ()
+   4           {
+   5   1         
+   6   1         lcd_init();
+*** WARNING C206 IN LINE 6 OF practice.c: 'lcd_init': missing function-prototype
+   7   1         show("fsgqsfd");
+*** WARNING C206 IN LINE 7 OF practice.c: 'show': missing function-prototype
+*** ERROR C267 IN LINE 7 OF practice.c: 'show': requires ANSI-style prototype
+   8   1         
+   9   1       }
+
+C51 COMPILATION COMPLETE.  2 WARNING(S),  1 ERROR(S)

@@ -1,0 +1,5 @@
+".\Objects\STARTUP.obj",
+".\Objects\display.obj",
+".\Objects\LCD.obj" 
+TO ".\Objects\task13" 
+PRINT(".\Listings\task13.m51") RAMSIZE(256) 

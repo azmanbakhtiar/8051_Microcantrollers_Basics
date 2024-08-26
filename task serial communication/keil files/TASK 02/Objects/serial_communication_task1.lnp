@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\serial_communication_task01.obj" 
+TO ".\Objects\serial_communication_task1" 
+PRINT(".\Listings\serial_communication_task1.m51") RAMSIZE(256) 
